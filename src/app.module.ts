@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { DoctorsModule } from './doctors/doctors.module'
 import { PatientsModule } from './patients/patients.module'
 import { PrescriptionsModule } from './prescriptions/prescriptions.module'
-import { ChatModule } from './chat/chat.module';
+import { ChatModule } from './chat/chat.module'
 
 @Module({
   imports: [

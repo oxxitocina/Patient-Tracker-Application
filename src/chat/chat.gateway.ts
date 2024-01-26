@@ -1,43 +1,56 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
+  WebSocketServer,
   MessageBody,
+  ConnectedSocket,
+  WsResponse,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets'
 import { ChatService } from './chat.service'
 import { CreateChatDto } from './dto/create-chat.dto'
 import { UpdateChatDto } from './dto/update-chat.dto'
+import { Server, Socket } from 'socket.io'
+import { Chat } from './entities/chat.entity'
+import { Observable, from, map } from 'rxjs'
 
-@WebSocketGateway()
-export class ChatGateway {
-  constructor(private readonly chatService: ChatService) {}
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  constructor(private chatService: ChatService) {}
 
-  @SubscribeMessage('createChat')
-  create(@MessageBody() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto)
-  }
+  @WebSocketServer() server: Server
 
   @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: string): string {
-    return data
+  handleEvent(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): WsResponse<unknown> {
+    console.log(data)
+    const event = data.event
+    this.server.emit(event, data.message)
+    return { event, data }
   }
 
-  @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll()
+  afterInit(server: Server) {
+    console.log(server)
+    //Do stuffs
   }
 
-  @SubscribeMessage('findOneChat')
-  findOne(@MessageBody() id: number) {
-    return this.chatService.findOne(id)
+  handleDisconnect(client: Socket) {
+    console.log(`Disconnected: ${client.id}`)
+    //Do stuffs
   }
 
-  @SubscribeMessage('updateChat')
-  update(@MessageBody() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(updateChatDto.id, updateChatDto)
-  }
-
-  @SubscribeMessage('removeChat')
-  remove(@MessageBody() id: number) {
-    return this.chatService.remove(id)
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log(`Connected ${client.id}`)
+    //Do stuffs
   }
 }
