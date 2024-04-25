@@ -21,6 +21,8 @@ export class Doctor {
   @Column()
   education: string
 
-  @OneToMany(() => Prescription, (Prescription) => Prescription.doctor)
+  @OneToMany(() => Prescription, (Prescription) => Prescription.doctor, {
+    cascade: true,
+  })
   prescription_list: Prescription[]
 }

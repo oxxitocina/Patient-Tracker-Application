@@ -34,7 +34,12 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ): WsResponse<unknown> {
     console.log(data)
+    const message = new CreateChatDto()
+    message.email = 'awd'
+    message.text = data.message
+    message.createdAt = new Date()
     const event = data.event
+    this.chatService.create(message)
     this.server.emit(event, data.message)
     return { event, data }
   }

@@ -16,7 +16,7 @@ export class Patient {
   description: string
 
   @OneToMany(() => Prescription, (Prescription) => Prescription.patient, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   prescription_list: Prescription[]
 }

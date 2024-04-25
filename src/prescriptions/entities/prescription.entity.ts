@@ -35,4 +35,5 @@ export class Prescription {
 
   @Column()
   end_date: string
+  // prescription: { doctor_id: number }
 }

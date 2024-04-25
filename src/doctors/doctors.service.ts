@@ -21,7 +21,7 @@ export class DoctorsService {
   }
 
   findOne(doctor_id: number) {
-    return this.doctorRepository.findOneBy({doctor_id})
+    return this.doctorRepository.findOneBy({ doctor_id })
   }
 
   update(id: number, updateDoctorDto: UpdateDoctorDto) {
