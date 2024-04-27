@@ -25,9 +25,9 @@ export class DoctorsController {
     return this.doctorsService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.doctorsService.findOne(+id)
+  @Get(':email')
+  findOne(@Param('email') email: string) {
+    return this.doctorsService.findOne(email)
   }
 
   @Patch(':id')

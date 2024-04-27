@@ -10,7 +10,6 @@ import { Doctor } from 'src/doctors/entities/doctor.entity'
 export class PrescriptionsService {
   constructor(
     @InjectRepository(Prescription)
-    @InjectRepository(Doctor)
     private prescriptionRepository: Repository<Prescription>,
   ) {}
   async create(createPrescriptionDto: CreatePrescriptionDto) {

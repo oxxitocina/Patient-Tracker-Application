@@ -4,6 +4,7 @@ import { UpdateDoctorDto } from './dto/update-doctor.dto'
 import { Repository } from 'typeorm'
 import { Doctor } from './entities/doctor.entity'
 import { InjectRepository } from '@nestjs/typeorm'
+import * as argon2 from 'argon2'
 
 @Injectable()
 export class DoctorsService {
@@ -12,7 +13,8 @@ export class DoctorsService {
     private doctorRepository: Repository<Doctor>,
   ) {}
 
-  create(createDoctorDto: CreateDoctorDto) {
+  async create(createDoctorDto: CreateDoctorDto) {
+    createDoctorDto.password = await argon2.hash(createDoctorDto.password)
     return this.doctorRepository.save(createDoctorDto)
   }
 
@@ -20,8 +22,8 @@ export class DoctorsService {
     return this.doctorRepository.find()
   }
 
-  findOne(doctor_id: number) {
-    return this.doctorRepository.findOneBy({ doctor_id })
+  findOne(email: string) {
+    return this.doctorRepository.findOne({ where: { email } })
   }
 
   update(id: number, updateDoctorDto: UpdateDoctorDto) {

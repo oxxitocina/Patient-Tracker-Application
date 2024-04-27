@@ -8,6 +8,8 @@ import { DoctorsModule } from './doctors/doctors.module'
 import { PatientsModule } from './patients/patients.module'
 import { PrescriptionsModule } from './prescriptions/prescriptions.module'
 import { ChatModule } from './chat/chat.module'
+import { AppointmentsModule } from './appointments/appointments.module'
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { ChatModule } from './chat/chat.module'
     PatientsModule,
     PrescriptionsModule,
     ChatModule,
+    AppointmentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
