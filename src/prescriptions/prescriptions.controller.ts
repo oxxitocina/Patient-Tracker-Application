@@ -23,7 +23,6 @@ export class PrescriptionsController {
     return this.prescriptionsService.create(createPrescriptionDto)
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() params: any) {
     return this.prescriptionsService.findAll(params)

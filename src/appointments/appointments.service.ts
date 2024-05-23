@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { CreateAppointmentDto } from './dto/create-appointment.dto'
 import { UpdateAppointmentDto } from './dto/update-appointment.dto'
 import { Appointment } from './entities/appointment.entity'
@@ -60,7 +60,10 @@ export class AppointmentsService {
       endTime,
     })
     console.log(appointmentAviability)
-    return this.appointmentRepository.save(createAppointmentDto)
+    if (appointmentAviability) {
+      return this.appointmentRepository.save(createAppointmentDto)
+    }
+    throw new ConflictException('Busy on this time')
   }
 
   findAll() {
@@ -68,6 +71,34 @@ export class AppointmentsService {
       relations: {
         doctor: true,
         patient: true,
+      },
+    })
+  }
+
+  findAllDoctors(params: any) {
+    return this.appointmentRepository.find({
+      relations: {
+        doctor: true,
+        patient: true,
+      },
+      where: {
+        doctor: {
+          doctor_id: params.doctor,
+        },
+      },
+    })
+  }
+
+  findAllPatients(params: any) {
+    return this.appointmentRepository.find({
+      relations: {
+        doctor: true,
+        patient: true,
+      },
+      where: {
+        patient: {
+          patient_id: params.patient,
+        },
       },
     })
   }

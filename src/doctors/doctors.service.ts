@@ -23,7 +23,10 @@ export class DoctorsService {
   }
 
   findOne(email: string) {
-    return this.doctorRepository.findOne({ where: { email } })
+    return this.doctorRepository.findOne({
+      where: { email },
+      relations: { user: true },
+    })
   }
 
   update(id: number, updateDoctorDto: UpdateDoctorDto) {
