@@ -1,3 +1,5 @@
+import { User } from 'src/users/entities/user.entity'
+
 export class CreateDoctorDto {
   name: string
   email: string
@@ -7,4 +9,5 @@ export class CreateDoctorDto {
   description: string
   education: string
   prescription_list: []
+  user: User
 }

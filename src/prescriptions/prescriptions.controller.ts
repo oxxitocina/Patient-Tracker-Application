@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import { PrescriptionsService } from './prescriptions.service'
 import { CreatePrescriptionDto } from './dto/create-prescription.dto'
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto'
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 
 @Controller('prescriptions')
 export class PrescriptionsController {
@@ -21,6 +23,7 @@ export class PrescriptionsController {
     return this.prescriptionsService.create(createPrescriptionDto)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() params: any) {
     return this.prescriptionsService.findAll(params)

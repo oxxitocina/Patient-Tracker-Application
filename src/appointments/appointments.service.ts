@@ -64,7 +64,12 @@ export class AppointmentsService {
   }
 
   findAll() {
-    return `This action returns all appointments`
+    return this.appointmentRepository.find({
+      relations: {
+        doctor: true,
+        patient: true,
+      },
+    })
   }
 
   findOne(id: number) {

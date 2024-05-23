@@ -1,13 +1,20 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 import { Prescription } from 'src/prescriptions/entities/prescription.entity'
 import { Appointment } from 'src/appointments/entities/appointment.entity'
+import { User } from 'src/users/entities/user.entity'
 
 @Entity()
 export class Doctor {
   @PrimaryGeneratedColumn()
   doctor_id: number
 
-  @Column()
+  @Column({ nullable: true })
   name: string
 
   @Column({ nullable: true })
@@ -16,16 +23,16 @@ export class Doctor {
   @Column({ nullable: true })
   password: string
 
-  @Column()
+  @Column({ nullable: true })
   specialization: string
 
-  @Column()
+  @Column({ nullable: true })
   experience: string
 
-  @Column()
+  @Column({ nullable: true })
   description: string
 
-  @Column()
+  @Column({ nullable: true })
   education: string
 
   @OneToMany(() => Prescription, (Prescription) => Prescription.doctor, {
@@ -37,4 +44,7 @@ export class Doctor {
     cascade: true,
   })
   appointment_list: Appointment[]
+
+  @OneToOne(() => User, (User) => User.doctor)
+  user: User
 }

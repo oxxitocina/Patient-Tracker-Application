@@ -1,19 +1,27 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 import { Prescription } from 'src/prescriptions/entities/prescription.entity'
 import { Appointment } from 'src/appointments/entities/appointment.entity'
+import { User } from 'src/users/entities/user.entity'
 
 @Entity()
 export class Patient {
   @PrimaryGeneratedColumn()
   patient_id: number
 
-  @Column()
+  @Column({ nullable: true })
   name: string
 
-  @Column()
+  @Column({ nullable: true })
   age: number
 
-  @Column()
+  @Column({ nullable: true })
   description: string
 
   @OneToMany(() => Prescription, (Prescription) => Prescription.patient, {
@@ -25,4 +33,7 @@ export class Patient {
     cascade: true,
   })
   appointment_list: Appointment[]
+
+  @OneToOne(() => User, (user) => user.patient)
+  user: User
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Patient } from './entities/patient.entity'
@@ -21,11 +21,20 @@ export class PatientsService {
   }
 
   findOne(patient_id: number): Promise<Patient | null> {
-    return this.patientRepository.findOneBy({ patient_id })
+    return this.patientRepository.findOne({
+      where: { patient_id: patient_id },
+      relations: { user: true },
+    })
   }
 
-  update(id: number, updatePatientDto: UpdatePatientDto) {
-    return `This action updates a #${id} patient`
+  async update(id: number, updatePatientDto: UpdatePatientDto) {
+    const patient = this.patientRepository.findOne({
+      where: { patient_id: id },
+    })
+
+    if (!patient) throw new NotFoundException('Patient not found')
+
+    return await this.patientRepository.update(id, updatePatientDto)
   }
 
   remove(id: number) {

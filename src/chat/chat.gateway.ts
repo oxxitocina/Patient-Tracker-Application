@@ -46,12 +46,12 @@ export class ChatGateway
 
   afterInit(server: Server) {
     console.log(server)
-    //Do stuffs
+    
   }
 
   handleDisconnect(client: Socket) {
     console.log(`Disconnected: ${client.id}`)
-    //Do stuffs
+
   }
 
   handleConnection(client: Socket, ...args: any[]) {

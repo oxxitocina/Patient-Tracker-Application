@@ -10,6 +10,7 @@ import { PrescriptionsModule } from './prescriptions/prescriptions.module'
 import { ChatModule } from './chat/chat.module'
 import { AppointmentsModule } from './appointments/appointments.module'
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from './auth/auth.module';
     ChatModule,
     AppointmentsModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
