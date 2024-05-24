@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { CreateAppointmentDto } from './dto/create-appointment.dto'
 import { UpdateAppointmentDto } from './dto/update-appointment.dto'
 import { Appointment } from './entities/appointment.entity'
@@ -108,8 +112,33 @@ export class AppointmentsService {
     return `This action returns a #${id} appointment`
   }
 
-  update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
-    return `This action updates a #${id} appointment`
+  async update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+    const patient = this.appointmentRepository.findOne({
+      where: { appointment_id: id },
+    })
+
+    if (!patient) throw new NotFoundException('Patient not found')
+
+    const { startTime, endTime } = updateAppointmentDto
+    dayjs.extend(LocalizedFormat)
+    const normalizeStartTime = dayjs(startTime).format('L LT')
+    const normalizeEndTime = dayjs(endTime).format('L LT')
+    console.log(normalizeStartTime)
+    console.log(normalizeEndTime)
+    const stringToDateStart = dayjs(normalizeStartTime).format()
+    const stringToDateEnd = dayjs(normalizeEndTime).format()
+
+    const appointmentData = {
+      startTime: stringToDateStart,
+      endTime: stringToDateEnd,
+    }
+
+    const appointmentAviability = await this.isAppointmentValid(appointmentData)
+    if (appointmentAviability) {
+      return await this.appointmentRepository.update(id, updateAppointmentDto)
+    }
+
+    throw new ConflictException('Busy on this time')
   }
 
   remove(id: number) {
