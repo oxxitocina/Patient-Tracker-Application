@@ -23,6 +23,18 @@ export class UsersService {
     createUserDto.password = await argon2.hash(createUserDto.password)
     const user = await this.usersRepository.save(createUserDto)
     console.log(user)
+    if (user?.role === 'patient') {
+      await this.patientService.update(user.patient.patient_id, {
+        email: user.username,
+      })
+    }
+
+    if (user?.role === 'doctor') {
+      await this.doctorService.update(user.doctor.doctor_id, {
+        email: user.username,
+      })
+    }
+
     const token = this.jwtService.sign({
       username: user.username,
       sub: user.user_id,

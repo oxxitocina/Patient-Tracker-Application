@@ -24,6 +24,9 @@ export class Patient {
   @Column({ nullable: true })
   description: string
 
+  @Column({ nullable: true })
+  email: string
+
   @OneToMany(() => Prescription, (Prescription) => Prescription.patient, {
     cascade: true,
   })

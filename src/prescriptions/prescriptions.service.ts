@@ -18,7 +18,7 @@ export class PrescriptionsService {
     prescription.dosage = createPrescriptionDto.dosage
     prescription.frequency = createPrescriptionDto.frequency
     prescription.start_date = createPrescriptionDto.start_date
-    prescription.end_date = createPrescriptionDto.start_date
+    prescription.end_date = createPrescriptionDto.end_date
     prescription.doctor = createPrescriptionDto.doctor
     prescription.patient = createPrescriptionDto.patient
     return this.prescriptionRepository.save(prescription)
