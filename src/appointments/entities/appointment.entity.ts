@@ -13,11 +13,11 @@ export class Appointment {
   @PrimaryGeneratedColumn()
   appointment_id: number
 
-  @Column({ type: 'timestamp' })
-  startTime: Date
+  @Column({ nullable: true })
+  startTime: string
 
-  @Column({ type: 'timestamp' })
-  endTime: Date
+  @Column({ nullable: true })
+  endTime: string
 
   @ManyToOne(() => Doctor, (Doctor) => Doctor.appointment_list)
   @JoinColumn({ name: 'doctor_id' })

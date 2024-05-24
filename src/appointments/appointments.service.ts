@@ -4,6 +4,8 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto'
 import { Appointment } from './entities/appointment.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import * as dayjs from 'dayjs'
+import * as LocalizedFormat from 'dayjs/plugin/LocalizedFormat'
 
 @Injectable()
 export class AppointmentsService {
@@ -11,17 +13,12 @@ export class AppointmentsService {
     @InjectRepository(Appointment)
     private appointmentRepository: Repository<Appointment>,
   ) {}
-  async isAppointmentValid(
-    appointmentData: Partial<Appointment>,
-  ): Promise<boolean> {
+  async isAppointmentValid(appointmentData): Promise<boolean> {
     const { startTime, endTime } = appointmentData
-    console.log(startTime, endTime)
 
     // Validate appointment time (8:00 to 16:00)
     const validStartTime = new Date(startTime).getHours() >= 8
     const validEndTime = new Date(endTime).getHours() <= 16
-    console.log(validStartTime)
-    console.log(validEndTime)
 
     // Check if the appointment is within 30 days
     const today = new Date()
@@ -30,36 +27,40 @@ export class AppointmentsService {
     const appointmentDate = new Date(startTime)
     const appointmentDateEnd = new Date(endTime)
     const withinThirtyDays = appointmentDate <= thirtyDaysFromNow
-    console.log(appointmentDate)
-    console.log(thirtyDaysFromNow)
-    console.log(withinThirtyDays)
 
     // Check availability (assuming you have a list of existing appointments)
     const existingAppointments = await this.appointmentRepository.find()
     const isAvailable = existingAppointments.every((existingAppointment) => {
       const existingStart = new Date(existingAppointment.startTime)
       const existingEnd = new Date(existingAppointment.endTime)
-      console.log(existingStart + 'aaaaaaaaaaaaaaaaa')
-      console.log(existingEnd + '')
-      console.log(appointmentDate + 'bbbbbbbbbbbbbbb')
-      console.log(appointmentDateEnd + '')
+
       return (
         (appointmentDate >= existingEnd ||
           appointmentDateEnd <= existingStart) &&
         (appointmentDate <= existingStart || appointmentDate >= existingEnd)
       )
     })
-    console.log(isAvailable)
 
     return validStartTime && validEndTime && withinThirtyDays && isAvailable
   }
   async create(createAppointmentDto: CreateAppointmentDto) {
     const { startTime, endTime } = createAppointmentDto
-    const appointmentAviability = await this.isAppointmentValid({
-      startTime,
-      endTime,
-    })
-    console.log(appointmentAviability)
+    dayjs.extend(LocalizedFormat)
+    const normalizeStartTime = dayjs(startTime).format('L LT')
+    const normalizeEndTime = dayjs(endTime).format('L LT')
+    console.log(normalizeStartTime)
+    console.log(normalizeEndTime)
+    const stringToDateStart = dayjs(normalizeStartTime).format()
+    const stringToDateEnd = dayjs(normalizeEndTime).format()
+    console.log('Date type:' + stringToDateStart)
+    console.log(stringToDateEnd)
+
+    const appointmentData = {
+      startTime: stringToDateStart,
+      endTime: stringToDateEnd,
+    }
+
+    const appointmentAviability = await this.isAppointmentValid(appointmentData)
     if (appointmentAviability) {
       return this.appointmentRepository.save(createAppointmentDto)
     }

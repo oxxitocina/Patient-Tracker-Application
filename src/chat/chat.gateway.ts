@@ -16,6 +16,7 @@ import { Server, Socket } from 'socket.io'
 import { Chat } from './entities/chat.entity'
 import { Observable, from, map } from 'rxjs'
 
+
 @WebSocketGateway({
   cors: {
     origin: '*',
