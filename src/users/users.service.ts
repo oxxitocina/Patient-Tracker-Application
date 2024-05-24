@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -36,11 +36,27 @@ export class UsersService {
   }
 
   findOne(username: string) {
-    return this.usersRepository.findOne({ where: { username } })
+    const user = this.usersRepository.findOne({
+      where: { username },
+      relations: {
+        doctor: true,
+        patient: true,
+      },
+    })
+    if (user) {
+      return user
+    }
+    throw new ConflictException('User not found')
   }
 
   findOneById(id: number) {
-    return this.usersRepository.findOne({ where: { user_id: id } })
+    return this.usersRepository.findOne({
+      where: { user_id: id },
+      relations: {
+        doctor: true,
+        patient: true,
+      },
+    })
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
