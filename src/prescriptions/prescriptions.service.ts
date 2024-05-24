@@ -1,4 +1,4 @@
-import { Injectable, Query } from '@nestjs/common'
+import { Injectable, NotFoundException, Query } from '@nestjs/common'
 import { CreatePrescriptionDto } from './dto/create-prescription.dto'
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto'
 import { Prescription } from './entities/prescription.entity'
@@ -20,7 +20,7 @@ export class PrescriptionsService {
     prescription.start_date = createPrescriptionDto.start_date
     prescription.end_date = createPrescriptionDto.end_date
     prescription.doctor = createPrescriptionDto.doctor
-    prescription.patient = createPrescriptionDto.patient
+    prescription.prescription = createPrescriptionDto.prescription
     return this.prescriptionRepository.save(prescription)
   }
 
@@ -36,14 +36,14 @@ export class PrescriptionsService {
         },
         relations: {
           doctor: true,
-          patient: true,
+          prescription: true,
         },
       })
     }
     return this.prescriptionRepository.find({
       relations: {
         doctor: true,
-        patient: true,
+        prescription: true,
       },
     })
   }
@@ -58,11 +58,22 @@ export class PrescriptionsService {
     return prescription
   }
 
-  update(id: number, updatePrescriptionDto: UpdatePrescriptionDto) {
-    return `This action updates a #${id} prescription`
+  async update(id: number, updatePrescriptionDto: UpdatePrescriptionDto) {
+    const prescription = this.prescriptionRepository.findOne({
+      where: { prescription_id: id },
+    })
+
+    if (!prescription) throw new NotFoundException('prescription not found')
+    return await this.prescriptionRepository.update(id, updatePrescriptionDto)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} prescription`
+  async remove(id: number) {
+    const prescription = await this.prescriptionRepository.findOne({
+      where: { prescription_id: id },
+    })
+
+    if (!prescription) throw new NotFoundException('User not found')
+
+    return await this.prescriptionRepository.delete(id)
   }
 }
