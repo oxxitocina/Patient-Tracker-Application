@@ -7,7 +7,7 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto'
 import { UpdateAppointmentDto } from './dto/update-appointment.dto'
 import { Appointment } from './entities/appointment.entity'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Not, Repository } from 'typeorm'
 import * as dayjs from 'dayjs'
 import * as LocalizedFormat from 'dayjs/plugin/LocalizedFormat'
 
@@ -32,8 +32,17 @@ export class AppointmentsService {
     const appointmentDateEnd = new Date(endTime)
     const withinThirtyDays = appointmentDate <= thirtyDaysFromNow
 
+    dayjs.extend(LocalizedFormat)
+    const stringToDateStart = dayjs(startTime).format()
+    const stringToDateEnd = dayjs(endTime).format()
+
     // Check availability (assuming you have a list of existing appointments)
-    const existingAppointments = await this.appointmentRepository.find()
+    const existingAppointments = await this.appointmentRepository.find({
+      where: {
+        startTime: Not(stringToDateStart),
+        endTime: Not(stringToDateEnd),
+      },
+    })
     const isAvailable = existingAppointments.every((existingAppointment) => {
       const existingStart = new Date(existingAppointment.startTime)
       const existingEnd = new Date(existingAppointment.endTime)
@@ -52,12 +61,9 @@ export class AppointmentsService {
     dayjs.extend(LocalizedFormat)
     const normalizeStartTime = dayjs(startTime).format('L LT')
     const normalizeEndTime = dayjs(endTime).format('L LT')
-    console.log(normalizeStartTime)
-    console.log(normalizeEndTime)
+
     const stringToDateStart = dayjs(normalizeStartTime).format()
     const stringToDateEnd = dayjs(normalizeEndTime).format()
-    console.log('Date type:' + stringToDateStart)
-    console.log(stringToDateEnd)
 
     const appointmentData = {
       startTime: stringToDateStart,
@@ -141,7 +147,13 @@ export class AppointmentsService {
     throw new ConflictException('Busy on this time')
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} appointment`
+  async remove(id: number) {
+    const appointment = await this.appointmentRepository.findOne({
+      where: { appointment_id: id },
+    })
+
+    if (!appointment) throw new NotFoundException('User not found')
+
+    return await this.appointmentRepository.delete(id)
   }
 }
