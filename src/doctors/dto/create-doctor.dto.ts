@@ -10,4 +10,6 @@ export class CreateDoctorDto {
   education: string
   prescription_list: []
   user: User
+  chats_list?: []
+  messages?: []
 }

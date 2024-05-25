@@ -18,14 +18,14 @@ export class PatientsService {
 
   findAll(): Promise<Patient[]> {
     return this.patientRepository.find({
-      relations: { user: true },
+      relations: { user: true, prescription_list: true, chats_list: true },
     })
   }
 
   findOne(patient_id: number): Promise<Patient | null> {
     return this.patientRepository.findOne({
       where: { patient_id: patient_id },
-      relations: { user: true },
+      relations: { user: true, chats_list: true },
     })
   }
 

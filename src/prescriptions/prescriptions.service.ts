@@ -20,7 +20,7 @@ export class PrescriptionsService {
     prescription.start_date = createPrescriptionDto.start_date
     prescription.end_date = createPrescriptionDto.end_date
     prescription.doctor = createPrescriptionDto.doctor
-    prescription.prescription = createPrescriptionDto.prescription
+    prescription.patient = createPrescriptionDto.patient
     return this.prescriptionRepository.save(prescription)
   }
 
@@ -36,14 +36,14 @@ export class PrescriptionsService {
         },
         relations: {
           doctor: true,
-          prescription: true,
+          patient: true,
         },
       })
     }
     return this.prescriptionRepository.find({
       relations: {
         doctor: true,
-        prescription: true,
+        patient: true,
       },
     })
   }

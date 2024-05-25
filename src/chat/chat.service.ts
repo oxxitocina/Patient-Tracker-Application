@@ -16,7 +16,35 @@ export class ChatService {
   }
 
   findAll() {
-    return this.chatRepository.find()
+    return this.chatRepository.find({
+      relations: [
+        'doctor',
+        'patient',
+        'messages',
+        'messages.patient',
+        'messages.doctor',
+      ],
+    })
+  }
+
+  findAllParams({ doctorID, patientID }) {
+    return this.chatRepository.find({
+      relations: [
+        'doctor',
+        'patient',
+        'messages',
+        'messages.patient',
+        'messages.doctor',
+      ],
+      where: {
+        patient: {
+          patient_id: patientID,
+        },
+        doctor: {
+          doctor_id: doctorID,
+        },
+      },
+    })
   }
 
   findOne(id: number) {

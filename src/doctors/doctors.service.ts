@@ -22,10 +22,10 @@ export class DoctorsService {
     return this.doctorRepository.find()
   }
 
-  findOne(email: string) {
+  findOne(id: number) {
     return this.doctorRepository.findOne({
-      where: { email },
-      relations: { user: true },
+      where: { doctor_id: id },
+      relations: { user: true, chats_list: true },
     })
   }
 

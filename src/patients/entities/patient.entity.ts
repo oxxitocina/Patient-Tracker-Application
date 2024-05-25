@@ -9,6 +9,8 @@ import {
 import { Prescription } from 'src/prescriptions/entities/prescription.entity'
 import { Appointment } from 'src/appointments/entities/appointment.entity'
 import { User } from 'src/users/entities/user.entity'
+import { Chat } from 'src/chat/entities/chat.entity'
+import { Message } from 'src/messages/entities/message.entity'
 
 @Entity()
 export class Patient {
@@ -39,4 +41,14 @@ export class Patient {
 
   @OneToOne(() => User, (user) => user.patient)
   user: User
+
+  @OneToMany(() => Chat, (chat) => chat.patient, {
+    cascade: true,
+  })
+  chats_list: Chat[]
+
+  @OneToMany(() => Message, (message) => message.patient, {
+    cascade: true,
+  })
+  messages: Message[]
 }

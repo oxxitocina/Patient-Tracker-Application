@@ -7,4 +7,6 @@ export class CreatePatientDto {
   description?: string
   prescription_list?: []
   user?: User
+  chats_list?: []
+  messages?: []
 }

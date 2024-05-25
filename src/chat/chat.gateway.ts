@@ -16,7 +16,6 @@ import { Server, Socket } from 'socket.io'
 import { Chat } from './entities/chat.entity'
 import { Observable, from, map } from 'rxjs'
 
-
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -35,24 +34,22 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ): WsResponse<unknown> {
     console.log(data)
-    const message = new CreateChatDto()
-    message.email = 'awd'
-    message.text = data.message
-    message.createdAt = new Date()
+    // const message = new CreateChatDto()
+    // message.email = 'awd'
+    // message.text = data.message
+    // message.createdAt = new Date()
     const event = data.event
-    this.chatService.create(message)
-    this.server.emit(event, data.message)
+    // this.chatService.create(message)
+    // this.server.emit(event, data.message)
     return { event, data }
   }
 
   afterInit(server: Server) {
     console.log(server)
-    
   }
 
   handleDisconnect(client: Socket) {
     console.log(`Disconnected: ${client.id}`)
-
   }
 
   handleConnection(client: Socket, ...args: any[]) {
