@@ -28,7 +28,7 @@ export class ChatService {
   }
 
   findAllParams({ doctorID, patientID }) {
-    return this.chatRepository.find({
+    return this.chatRepository.findOne({
       relations: [
         'doctor',
         'patient',
@@ -42,6 +42,11 @@ export class ChatService {
         },
         doctor: {
           doctor_id: doctorID,
+        },
+      },
+      order: {
+        messages: {
+          message_id: 'ASC',
         },
       },
     })

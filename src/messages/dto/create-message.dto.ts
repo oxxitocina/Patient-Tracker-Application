@@ -5,6 +5,6 @@ import { Patient } from 'src/patients/entities/patient.entity'
 export class CreateMessageDto {
   message: string
   chat: Chat
-  doctor: Doctor
-  patient: Patient
+  doctor?: Doctor
+  patient?: Patient
 }
