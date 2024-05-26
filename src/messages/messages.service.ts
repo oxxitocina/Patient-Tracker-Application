@@ -12,7 +12,6 @@ export class MessagesService {
     private messageRepository: Repository<Message>,
   ) {}
   create(createMessageDto: CreateMessageDto) {
-    console.log(createMessageDto)
     return this.messageRepository.save(createMessageDto)
   }
 

@@ -17,6 +17,7 @@ import { Chat } from './entities/chat.entity'
 import { Observable, from, map } from 'rxjs'
 import { MessagesService } from 'src/messages/messages.service'
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto'
+import { v4 as uuidv4 } from 'uuid'
 
 @WebSocketGateway({
   cors: {
@@ -38,28 +39,71 @@ export class ChatGateway
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
   ): WsResponse<unknown> {
+    console.log('ws data:')
     console.log(data)
-
-    const message = {
-      message: data.message,
-      doctor: {
-        doctor_id: data.doctor_id,
-      },
-      chat: {
-        id: data.chat_id,
+    if (data.doctor_id) {
+      const message = {
+        message: data.message,
         doctor: {
           doctor_id: data.doctor_id,
         },
-      },
+        chat: {
+          id: data.chat_id,
+          doctor: {
+            doctor_id: data.doctor_id,
+          },
+        },
+      }
+
+      const socketMessage = {
+        message: data.message,
+        doctor_id: data.doctor_id,
+        chat_id: data.chat_id,
+        event: data.event,
+        name: data.name,
+        email: data.email,
+        id: uuidv4(),
+      }
+
+      console.log(socketMessage)
+      const event = data.event
+      // @ts-ignore
+      this.messageService.create(message)
+      console.log(message)
+      this.server.emit(event, socketMessage)
+      return { event, data }
     }
 
-    console.log(message)
+    if (data.patient_id) {
+      const message = {
+        message: data.message,
+        patient: {
+          patient_id: data.patient_id,
+        },
+        chat: {
+          id: data.chat_id,
+          patient: {
+            patient_id: data.patient_id,
+          },
+        },
+      }
 
-    const event = data.event
-    // @ts-ignore
-    this.messageService.create(message)
-    // this.server.emit(event, message)
-    return { event, data }
+      const socketMessage = {
+        message: data.message,
+        patient_id: data.patient_id,
+        chat_id: data.chat_id,
+        event: data.event,
+        name: data.name,
+        email: data.email,
+        id: uuidv4(),
+      }
+
+      const event = data.event
+      // @ts-ignore
+      this.messageService.create(message)
+      this.server.emit(event, socketMessage)
+      return { event, data }
+    }
   }
 
   afterInit(server: Server) {

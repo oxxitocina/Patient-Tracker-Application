@@ -27,8 +27,8 @@ export class ChatService {
     })
   }
 
-  findAllParams({ doctorID, patientID }) {
-    return this.chatRepository.findOne({
+  async findAllParams({ doctorID, patientID }) {
+    const chat = await this.chatRepository.findOne({
       relations: [
         'doctor',
         'patient',
@@ -50,6 +50,22 @@ export class ChatService {
         },
       },
     })
+
+    if (!chat) {
+      const create = {
+        doctor: {
+          doctor_id: doctorID,
+        },
+        patient: {
+          patient_id: patientID,
+        },
+      }
+      // @ts-ignore
+      await this.create(create)
+      return this.findAllParams({ patientID, doctorID })
+    }
+
+    return chat
   }
 
   findOne(id: number) {
