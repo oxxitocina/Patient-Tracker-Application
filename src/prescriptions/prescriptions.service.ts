@@ -26,19 +26,34 @@ export class PrescriptionsService {
 
   findAll(params: any) {
     if (params !== null) {
-      console.log(params.doctor)
-      const id = params.doctor
-      return this.prescriptionRepository.find({
-        where: {
-          doctor: {
-            doctor_id: id,
+      if (params.doctor) {
+        const id = params.doctor
+        return this.prescriptionRepository.find({
+          where: {
+            doctor: {
+              doctor_id: id,
+            },
           },
-        },
-        relations: {
-          doctor: true,
-          patient: true,
-        },
-      })
+          relations: {
+            doctor: true,
+            patient: true,
+          },
+        })
+      }
+      if (params.patient) {
+        const id = params.patient
+        return this.prescriptionRepository.find({
+          where: {
+            patient: {
+              patient_id: id,
+            },
+          },
+          relations: {
+            doctor: true,
+            patient: true,
+          },
+        })
+      }
     }
     return this.prescriptionRepository.find({
       relations: {
