@@ -9,7 +9,7 @@ import { Appointment } from './entities/appointment.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Not, Repository } from 'typeorm'
 import * as dayjs from 'dayjs'
-import * as LocalizedFormat from 'dayjs/plugin/LocalizedFormat'
+import * as LocalizedFormat from 'dayjs/plugin/LocalizedFormat.js'
 
 @Injectable()
 export class AppointmentsService {
