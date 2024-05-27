@@ -9,9 +9,13 @@ import { PatientsModule } from './patients/patients.module'
 import { PrescriptionsModule } from './prescriptions/prescriptions.module'
 import { ChatModule } from './chat/chat.module'
 import { AppointmentsModule } from './appointments/appointments.module'
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { MessagesModule } from './messages/messages.module';
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './users/users.module'
+import { MessagesModule } from './messages/messages.module'
+import { ScheduleModule } from '@nestjs/schedule'
+import { TasksModule } from './tasks/tasks.module'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { MailModule } from './mail/mail.module'
 
 @Module({
   imports: [
@@ -39,6 +43,18 @@ import { MessagesModule } from './messages/messages.module';
     AuthModule,
     UsersModule,
     MessagesModule,
+    ScheduleModule.forRoot(),
+    TasksModule,
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
+    }),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
