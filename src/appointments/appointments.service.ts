@@ -8,8 +8,8 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto'
 import { Appointment } from './entities/appointment.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Not, Repository } from 'typeorm'
-import dayjs from 'dayjs'
-import LocalizedFormat from 'dayjs/plugin/LocalizedFormat'
+
+import * as moment from 'moment'
 
 @Injectable()
 export class AppointmentsService {
@@ -32,9 +32,8 @@ export class AppointmentsService {
     const appointmentDateEnd = new Date(endTime)
     const withinThirtyDays = appointmentDate <= thirtyDaysFromNow
 
-    dayjs.extend(LocalizedFormat)
-    const stringToDateStart = dayjs(startTime).format()
-    const stringToDateEnd = dayjs(endTime).format()
+    const stringToDateStart = moment(startTime, 'MM/DD/YYYY hh:mm A').format()
+    const stringToDateEnd = moment(endTime, 'MM/DD/YYYY hh:mm A').format()
 
     // Check availability (assuming you have a list of existing appointments)
     const existingAppointments = await this.appointmentRepository.find({
@@ -58,12 +57,22 @@ export class AppointmentsService {
   }
   async create(createAppointmentDto: CreateAppointmentDto) {
     const { startTime, endTime } = createAppointmentDto
-    dayjs.extend(LocalizedFormat)
-    const normalizeStartTime = dayjs(startTime).format('L LT')
-    const normalizeEndTime = dayjs(endTime).format('L LT')
 
-    const stringToDateStart = dayjs(normalizeStartTime).format()
-    const stringToDateEnd = dayjs(normalizeEndTime).format()
+    const normalizeStartTime = moment(startTime, 'MM/DD/YYYY hh:mm A').format(
+      'MM/DD/YYYY hh:mm A',
+    )
+    const normalizeEndTime = moment(endTime, 'MM/DD/YYYY hh:mm A').format(
+      'MM/DD/YYYY hh:mm A',
+    )
+
+    const stringToDateStart = moment(
+      normalizeStartTime,
+      'MM/DD/YYYY hh:mm A',
+    ).format()
+    const stringToDateEnd = moment(
+      normalizeEndTime,
+      'MM/DD/YYYY hh:mm A',
+    ).format()
 
     const appointmentData = {
       startTime: stringToDateStart,
@@ -126,13 +135,22 @@ export class AppointmentsService {
     if (!patient) throw new NotFoundException('Patient not found')
 
     const { startTime, endTime } = updateAppointmentDto
-    dayjs.extend(LocalizedFormat)
-    const normalizeStartTime = dayjs(startTime).format('L LT')
-    const normalizeEndTime = dayjs(endTime).format('L LT')
-    console.log(normalizeStartTime)
-    console.log(normalizeEndTime)
-    const stringToDateStart = dayjs(normalizeStartTime).format()
-    const stringToDateEnd = dayjs(normalizeEndTime).format()
+
+    const normalizeStartTime = moment(startTime, 'MM/DD/YYYY hh:mm A').format(
+      'MM/DD/YYYY hh:mm A',
+    )
+    const normalizeEndTime = moment(endTime, 'MM/DD/YYYY hh:mm A').format(
+      'MM/DD/YYYY hh:mm A',
+    )
+
+    const stringToDateStart = moment(
+      normalizeStartTime,
+      'MM/DD/YYYY hh:mm A',
+    ).format()
+    const stringToDateEnd = moment(
+      normalizeEndTime,
+      'MM/DD/YYYY hh:mm A',
+    ).format()
 
     const appointmentData = {
       startTime: stringToDateStart,
