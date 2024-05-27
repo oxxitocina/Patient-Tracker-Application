@@ -8,8 +8,8 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto'
 import { Appointment } from './entities/appointment.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Not, Repository } from 'typeorm'
-import * as dayjs from 'dayjs'
-import * as LocalizedFormat from 'dayjs/plugin/LocalizedFormat.js'
+import dayjs from 'dayjs'
+import LocalizedFormat from 'dayjs/plugin/LocalizedFormat'
 
 @Injectable()
 export class AppointmentsService {
