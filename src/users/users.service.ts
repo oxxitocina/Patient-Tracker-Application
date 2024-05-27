@@ -26,12 +26,14 @@ export class UsersService {
     if (user?.role === 'patient') {
       await this.patientService.update(user.patient.patient_id, {
         email: user.username,
+        name: user.username,
       })
     }
 
     if (user?.role === 'doctor') {
       await this.doctorService.update(user.doctor.doctor_id, {
         email: user.username,
+        name: user.username,
       })
     }
 
