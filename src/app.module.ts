@@ -47,7 +47,9 @@ import { MailModule } from './mail/mail.module'
     TasksModule,
     MailerModule.forRoot({
       transport: {
+        service: 'gmail',
         host: process.env.EMAIL_HOST,
+        port: 587,
         auth: {
           user: process.env.EMAIL_USERNAME,
           pass: process.env.EMAIL_PASSWORD,

@@ -10,9 +10,9 @@ export class MailService {
     const message = body.message
 
     this.mailService.sendMail({
-      from: 'Kingsley Okure <kingsleyokgeorge@gmail.com>',
+      from: 'noreply',
       to: body.to,
-      subject: `How to Send Emails with Nodemailer`,
+      subject: `Notification`,
       text: message,
     })
   }

@@ -25,14 +25,16 @@ export class UsersService {
     console.log(user)
     if (user?.role === 'patient') {
       await this.patientService.update(user.patient.patient_id, {
-        email: user.username,
+        // email: user.username,
+        email: 'madishka.kapezov@gmail.com',
         name: user.username,
       })
     }
 
     if (user?.role === 'doctor') {
       await this.doctorService.update(user.doctor.doctor_id, {
-        email: user.username,
+        // email: user.username,
+        email: 'madishka.kapezov@gmail.com',
         name: user.username,
       })
     }
@@ -74,7 +76,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
+    
   }
 
   remove(id: number) {

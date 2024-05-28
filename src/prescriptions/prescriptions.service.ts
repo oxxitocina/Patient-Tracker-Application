@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException, Query } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreatePrescriptionDto } from './dto/create-prescription.dto'
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto'
 import { Prescription } from './entities/prescription.entity'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Doctor } from 'src/doctors/entities/doctor.entity'
+import * as moment from 'moment'
 
 @Injectable()
 export class PrescriptionsService {
@@ -90,5 +90,34 @@ export class PrescriptionsService {
     if (!prescription) throw new NotFoundException('User not found')
 
     return await this.prescriptionRepository.delete(id)
+  }
+
+  validatePrescription(prescription: Prescription): boolean {
+    const now = moment(new Date()).format()
+    const currentTimeSlot = this.getTimeSlot(moment(now).format())
+
+    const startDate = moment(prescription.start_date, 'MM/DD/YYYY').format()
+
+    const endDate = moment(prescription.end_date, 'MM/DD/YYYY').format()
+
+    const isWithinDateRange = now >= startDate && now <= endDate
+    const isValidTimeSlot = currentTimeSlot <= Number(prescription.frequency)
+
+    return isWithinDateRange && isValidTimeSlot
+  }
+
+  private getTimeSlot(date: string): number {
+    const hours = moment(date).hours()
+    const minutes = moment(date).minutes()
+
+    if (hours === 8 && minutes === 0) {
+      return 1
+    } else if (hours === 14 && minutes === 0) {
+      return 2
+    } else if (hours === 20 && minutes === 0) {
+      return 3
+    } else {
+      return 999
+    }
   }
 }
